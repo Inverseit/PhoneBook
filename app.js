@@ -5,25 +5,36 @@ const mercurius = require("mercurius");
 const schema = require("./schema");
 // const resolvers = require("./resolvers");
 
+const db = require("./services/db");
+const config = require("./config");
+
 const resolvers = {
   Query: {
-    users: async () => Object.values(users),
+    users: async () => {
+      try {
+        const { rows } = await db.query(
+          "SELECT id, name, number from users",
+          []
+        );
+        return rows;
+      } catch (error) {
+        console.error("DB error");
+      }
+    },
   },
 
   Mutation: {
     createUser: async (_, { name, number }) => {
-      const user = {
-        _id: Math.random().toString(),
-        name: name,
-        number: number,
-      };
-      await users.push(user);
-      return user;
+      try {
+        query = `insert into users values ('${name}', '${number}') RETURNING id, name, number`;
+        const user = await db.query(query, []);
+        return user.rows[0];
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 };
-
-const users = [];
 
 const app = Fastify({ logger: true });
 app.register(helmet);
@@ -31,6 +42,10 @@ app.register(helmet);
 app.register(mercurius, {
   schema,
   resolvers,
+});
+
+app.register(require("fastify-postgres"), {
+  connectionString: "postgres://postgres@localhost/postgres",
 });
 
 app.post("/", async (req, reply) => {

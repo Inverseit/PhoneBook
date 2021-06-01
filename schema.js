@@ -1,6 +1,6 @@
 const schema = `
   type User {
-    _id: ID!
+    id: ID!
     name: String!
     number: String!
   }
