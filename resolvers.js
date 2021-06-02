@@ -2,10 +2,10 @@ const db = require("./services/db");
 
 const resolvers = {
   Query: {
-    users: async () => {
+    contacts: async () => {
       try {
         const { rows } = await db.query(
-          "SELECT id, name, number FROM users",
+          "SELECT id, name, number FROM contacts",
           []
         );
         return rows;
@@ -15,9 +15,10 @@ const resolvers = {
     },
     one: async (_, { id }) => {
       try {
-        const { rows } = await db.query("SELECT * FROM users WHERE id = $1", [
-          id,
-        ]);
+        const { rows } = await db.query(
+          "SELECT * FROM contacts WHERE id = $1",
+          [id]
+        );
         return rows[0];
       } catch (error) {
         console.error("DB error");
@@ -26,18 +27,18 @@ const resolvers = {
   },
 
   Mutation: {
-    createUser: async (_, { name, number }) => {
+    createContact: async (_, { name, number }) => {
       try {
-        const query = `INSERT INTO users VALUES ($1, $2) RETURNING id, name, number;`;
+        const query = `INSERT INTO contacts VALUES ($1, $2) RETURNING id, name, number;`;
         const response = await db.query(query, [name, number]);
         return response.rows[0];
       } catch (error) {
         console.error(error);
       }
     },
-    updateUser: async (_, { id, number, name }) => {
+    updateContact: async (_, { id, number, name }) => {
       try {
-        const query = `UPDATE users 
+        const query = `UPDATE contacts 
                        SET name = $1, number = $2
                        WHERE id = $3
                        RETURNING id, name, number;
@@ -49,9 +50,9 @@ const resolvers = {
         console.error("DB error");
       }
     },
-    deleteUser: async (_, { id }) => {
+    deleteContact: async (_, { id }) => {
       try {
-        const query = `DELETE FROM users WHERE id=$1 RETURNING *;`;
+        const query = `DELETE FROM contacts WHERE id=$1 RETURNING *;`;
         const response = await db.query(query, [id]);
         return response.rows[0];
       } catch (error) {

@@ -1,19 +1,19 @@
 const schema = `
-  type User {
+  type Contact {
     id: ID!
     name: String!
     number: String!
   }
 
   type Query {
-    users: [User!]!
-    one(id: Int!): User
+    contacts: [Contact!]!
+    one(id: Int!): Contact
   }
   
   type Mutation {
-    createUser(name: String!, number: String!): User!
-    updateUser(id: Int!, name: String!, number: String!): User!
-    deleteUser(id: Int!): User
+    createContact(name: String!, number: String!): Contact!
+    updateContact(id: Int!, name: String!, number: String!): Contact!
+    deleteContact(id: Int!): Contact
   }
 `;
 
