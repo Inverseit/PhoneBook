@@ -5,7 +5,7 @@ const resolvers = {
     users: async () => {
       try {
         const { rows } = await db.query(
-          "SELECT id, name, number from users",
+          "SELECT id, name, number FROM users",
           []
         );
         return rows;
@@ -15,7 +15,7 @@ const resolvers = {
     },
     one: async (_, { id }) => {
       try {
-        const { rows } = await db.query("SELECT * from users where id = $1", [
+        const { rows } = await db.query("SELECT * FROM users WHERE id = $1", [
           id,
         ]);
         return rows[0];
@@ -28,7 +28,7 @@ const resolvers = {
   Mutation: {
     createUser: async (_, { name, number }) => {
       try {
-        const query = `insert into users values ($1, $2) RETURNING id, name, number;`;
+        const query = `INSERT INTO users VALUES ($1, $2) RETURNING id, name, number;`;
         const response = await db.query(query, [name, number]);
         return response.rows[0];
       } catch (error) {
