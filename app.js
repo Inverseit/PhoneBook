@@ -1,20 +1,22 @@
 const Fastify = require("fastify");
-const helmet = require("fastify-helmet");
+// const helmet = require("fastify-helmet");
 
 const mercurius = require("mercurius");
 const schema = require("./schema");
 const resolvers = require("./resolvers");
 
 const app = Fastify({ logger: true });
-app.register(helmet);
+// app.register(helmet);
 
 app.register(mercurius, {
   schema,
   resolvers,
-});
-
-app.register(require("fastify-postgres"), {
-  connectionString: "postgres://postgres@localhost/postgres",
+  context: (request, reply) => {
+    // Return an object that will be available in your GraphQL resolvers
+    return {
+      user_id: 1234,
+    };
+  },
 });
 
 app.post("/", async (req, reply) => {
