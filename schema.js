@@ -21,7 +21,6 @@ const schema = `
 
   type Query {
     getAllContacts: [Contact!]!
-    getContactByID(id: Int!): Contact
     login(email: String!, password: String!): AuthData!
   }
   

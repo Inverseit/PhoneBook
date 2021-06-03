@@ -8,7 +8,7 @@ const isAuthenticated = (context) => {
   }
   return jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
     if (err) {
-      throw new Error(err);
+      throw new Error("Your authorization token is not valid or expired!", err);
     }
     return decoded;
   });

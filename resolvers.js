@@ -17,18 +17,7 @@ const resolvers = {
         console.log(rows);
         return rows;
       } catch (error) {
-        console.error(error, "DB error");
-      }
-    },
-    getContactByID: async (_, { id }) => {
-      try {
-        const { rows } = await db.query(
-          "SELECT * FROM contacts WHERE id = $1",
-          [id]
-        );
-        return rows[0];
-      } catch (error) {
-        console.error("DB error");
+        throw error;
       }
     },
     login: async (_, { email, password }, context) => {
@@ -58,7 +47,10 @@ const resolvers = {
   },
 
   Mutation: {
-    createContact: async (_, { name, number }, context) => {
+    createContact: async (obj, args, context) => {
+      console.log(obj, args, context);
+      const name = args.name;
+      const number = args.number;
       try {
         const user = isAuthenticated(context);
         const query = `insert into contacts(name, number, user_id) values ($1, $2, $3) returning *`;
@@ -69,26 +61,35 @@ const resolvers = {
         // console.error(error);
       }
     },
-    updateContact: async (_, { id, number, name }) => {
+    updateContact: async (_, { id, number, name }, context) => {
       try {
+        const user = isAuthenticated(context);
         const query = `UPDATE contacts 
                        SET name = $1, number = $2
-                       WHERE id = $3
-                       RETURNING id, name, number;
+                       WHERE contact_id = $3 and user_id = $4
+                       RETURNING contact_id, name, number;
                       `;
-        const response = await db.query(query, [name, number, id]);
+        const response = await db.query(query, [
+          name,
+          number,
+          id,
+          user.user_id,
+        ]);
         console.log(response);
         return response.rows[0];
       } catch (error) {
         console.error("DB error");
+        throw error;
       }
     },
-    deleteContact: async (_, { id }) => {
+    deleteContact: async (_, { id }, context) => {
+      const user = isAuthenticated(context);
       try {
-        const query = `DELETE FROM contacts WHERE id=$1 RETURNING *;`;
-        const response = await db.query(query, [id]);
+        const query = `DELETE FROM contacts WHERE contact_id=$1 and user_id = $2 RETURNING *;`;
+        const response = await db.query(query, [id, user.user_id]);
         return response.rows[0];
       } catch (error) {
+        throw error;
         console.error("DB error!", error);
       }
     },

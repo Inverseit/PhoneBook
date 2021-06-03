@@ -11,12 +11,7 @@ const app = Fastify({ logger: true });
 app.register(mercurius, {
   schema,
   resolvers,
-  context: (request, reply) => {
-    // Return an object that will be available in your GraphQL resolvers
-    return {
-      user_id: 1234,
-    };
-  },
+  context: (request, reply) => ({ test: 1234 }),
 });
 
 app.post("/", async (req, reply) => {
