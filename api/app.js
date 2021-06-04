@@ -1,6 +1,6 @@
 const Fastify = require("fastify");
 const mercurius = require("mercurius");
-
+const db = require("./services/db");
 const app = Fastify({ logger: true });
 
 const { makeExecutableSchema } = require("graphql-tools");
@@ -20,9 +20,9 @@ const graphqlOptions = {
   },
   routes: true,
   context: (request, reply) => {
-    console.log("context is running");
     return {
-      user_id: "6",
+      db: db,
+      token: request.headers["x-jwt-token"],
     };
   },
 };
