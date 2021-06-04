@@ -1,0 +1,29 @@
+version: '1'
+
+services:
+  api:
+    build: ./api
+    volumes:
+      - ./api:/app
+    user: root
+    command: |
+      /bin/sh -c "
+        yarn
+        yarn global add nodemon --prefix /usr/local
+        nodemon app.js
+      "
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+
+  
+  db:
+    image: postgres:alpine
+    volumes:
+      - api-db:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: api_db
+      POSTGRES_PASSWORD: postgres
+volumes:
+  api-db:

@@ -1,9 +1,10 @@
-const db = require("../services/db");
-const isAuthenticated = require("../midlewares/isAuthenticated");
+const db = require("../../../services/db");
+const isAuthenticated = require("../../../midlewares/isAuthenticated");
 require("dotenv").config();
 
 const getAllContacts = async (_, args, context) => {
   try {
+    console.log("---", context.user_id);
     const user = isAuthenticated(context);
     const { rows } = await db.query(
       "SELECT * FROM contacts where user_id = $1",
@@ -55,9 +56,7 @@ const deleteContact = async (_, { id }, context) => {
   }
 };
 
-module.exports = {
-  getAllContacts,
-  createContact,
-  updateContact,
-  deleteContact,
+exports.resolver = {
+  Query: { getAllContacts },
+  Mutation: { createContact, updateContact, deleteContact },
 };

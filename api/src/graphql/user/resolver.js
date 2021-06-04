@@ -1,5 +1,5 @@
-const db = require("../services/db");
-const bcrypt = require("bcrypt");
+const db = require("../../../services/db");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
@@ -15,20 +15,18 @@ const login = async (_, { email, password }, context) => {
     }
     const hashInDB = res.rows[0].password;
     const result = await bcrypt.compare(password, hashInDB);
-    if (result) {
-      const user = res.rows[0];
-      const payload = { user_id: user.user_id };
-      const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "2h",
-      });
-      return {
-        user_id: user.user_id,
-        token: token,
-        tokenExpiration: 2,
-      };
-    } else {
-      throw new Error("Login credentials error!");
-    }
+    if (!result) throw new Error("Login credentials error!");
+
+    const user = res.rows[0];
+    const payload = { user_id: user.user_id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "2h",
+    });
+    return {
+      user_id: user.user_id,
+      token: token,
+      tokenExpiration: 2,
+    };
   } catch (error) {
     throw error;
   }
@@ -60,7 +58,11 @@ const signup = async (obj, { email, name, password, password2 }) => {
   }
 };
 
-module.exports = {
-  login: login,
-  signup: signup,
+exports.resolver = {
+  Query: {
+    login,
+  },
+  Mutation: {
+    signup,
+  },
 };
