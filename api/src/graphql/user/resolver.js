@@ -33,11 +33,14 @@ const login = async (_, { email, password }, context) => {
 };
 
 // signup resolver (reg data) => new user data
-const signup = async (obj, { email, name, password, password2 }) => {
+const signup = async (obj, { input: { email, name, password, password2 } }) => {
   // Validation
   try {
     if (password != password2) {
       throw new Error("Passwords are not equal");
+    }
+    if (password.length < 6) {
+      throw new Error("Password is too short");
     }
     // email is unique
     const res = await db.query("select user_id from users where email = $1", [

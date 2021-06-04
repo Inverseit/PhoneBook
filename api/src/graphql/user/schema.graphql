@@ -1,8 +1,6 @@
 type User {
-  user_id: ID!
   email: String!
   name: String!
-  password: String!
 }
 
 type AuthData {
@@ -15,11 +13,13 @@ type Query {
   login(email: String!, password: String!): AuthData!
 }
 
+input SignUpInput {
+  email: String!
+  name: String!
+  password: String!
+  password2: String!
+}
+
 type Mutation {
-  signup(
-    email: String!
-    name: String!
-    password: String!
-    password2: String!
-  ): User
+  signup(input: SignUpInput!): User
 }

@@ -29,11 +29,6 @@ const graphqlOptions = {
 
 app.register(mercurius, graphqlOptions);
 
-// app.post("/", async (req, reply) => {
-//   const { query } = req.body;
-//   return reply.graphql(query);
-// });s
-
 const start = async () => {
   await app.listen(3000, "0.0.0.0");
 };
