@@ -1,4 +1,4 @@
-const db = require("../../../services/db");
+// const db = require("../../../services/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
@@ -6,12 +6,13 @@ require("dotenv").config();
 // Login resolver (email, password) => AuthInfo
 const login = async (_, { email, password }, context) => {
   try {
+    db = context.db;
     const res = await db.query(
       "select user_id, password from users where email = $1",
       [email]
     );
     if (res.rows.length != 1) {
-      throw new Error("Login credentials error");
+      throw new Error("Login credentials error!");
     }
     const hashInDB = res.rows[0].password;
     const result = await bcrypt.compare(password, hashInDB);
@@ -39,7 +40,7 @@ const signup = async (obj, { input: { email, name, password, password2 } }) => {
     if (password != password2) {
       throw new Error("Passwords are not equal");
     }
-    if (password.length < 6) {
+    if (!password || password.length < 6) {
       throw new Error("Password is too short");
     }
     // email is unique
@@ -52,7 +53,7 @@ const signup = async (obj, { input: { email, name, password, password2 } }) => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password, salt);
     const insertResponse = await db.query(
-      "insert into users(email, password, name) values ($1, $2, $3) returning *",
+      "insert into users(email, password, name) values ($1, $2, $3) returning email",
       [email, hash, name]
     );
     return insertResponse.rows[0];

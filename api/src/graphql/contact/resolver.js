@@ -5,13 +5,14 @@ require("dotenv").config();
 const getAllContacts = async (_, args, context) => {
   try {
     const db = context.db;
-    const user = isAuthenticated(context.token);
-    const { rows } = await db.query(
-      "SELECT * FROM contacts where user_id = $1",
-      [user.user_id]
-    );
-    console.log(rows);
-    return rows;
+    const user = await isAuthenticated(context.token);
+    if (!user.user_id) {
+      throw new Error("Token error");
+    }
+    const res = await db.query("SELECT * FROM contacts where user_id = $1", [
+      user.user_id,
+    ]);
+    return res.rows;
   } catch (error) {
     console.log(error);
     throw error;

@@ -3,7 +3,7 @@ const mercurius = require("mercurius");
 const db = require("./services/db");
 const app = Fastify({ logger: true });
 
-const { makeExecutableSchema } = require("graphql-tools");
+const { makeExecutableSchema } = require("@graphql-tools/schema");
 const glue = require("schemaglue");
 
 const { schema, resolver } = glue("src/graphql");

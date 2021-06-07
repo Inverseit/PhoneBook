@@ -1,9 +1,0 @@
-{
-  "lastRun": "1622793076150-create-tables.js",
-  "migrations": [
-    {
-      "title": "1622793076150-create-tables.js",
-      "timestamp": 1622799148407
-    }
-  ]
-}
