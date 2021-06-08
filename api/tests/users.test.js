@@ -164,11 +164,11 @@ describe("Sign Up", () => {
         input: {
           email: "testemail",
           name: "testname",
-          password: "123456789",
-          password2: "123456789",
+          password: "lol123456789",
+          password2: "lol123456789",
         },
       },
-      { db }
+      { kek: db }
     );
     expect(res).toEqual({
       email: "testemail",

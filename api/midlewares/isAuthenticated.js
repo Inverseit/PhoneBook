@@ -9,6 +9,9 @@ const isAuthenticated = (token) => {
     if (err) {
       throw new Error("Your authorization token is not valid or expired!", err);
     }
+    if (!decoded.user_id) {
+      throw new Error("Token is invalid");
+    }
     return decoded;
   });
 };

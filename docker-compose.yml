@@ -1,4 +1,4 @@
-version: '1'
+version: '3'
 
 services:
   api:
@@ -10,7 +10,7 @@ services:
       /bin/sh -c "
         yarn
         yarn global add nodemon --prefix /usr/local
-        nodemon app.js
+        nodemon -L app.js
       "
     depends_on:
       - db

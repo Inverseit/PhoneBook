@@ -12,12 +12,10 @@ const executableSchema = makeExecutableSchema({
   typeDefs: schema,
   resolvers: resolver,
 });
-//ff
+
 const graphqlOptions = {
   schema: executableSchema,
-  graphiql: {
-    endpoint: "/graphiql",
-  },
+  graphiql: "playground",
   routes: true,
   context: (request, reply) => {
     return {
