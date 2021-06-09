@@ -14,6 +14,7 @@ services:
       "
     depends_on:
       - db
+      - redis
     ports:
       - "3000:3000"
 
@@ -25,5 +26,14 @@ services:
     environment:
       POSTGRES_DB: api_db
       POSTGRES_PASSWORD: postgres
+
+
+  redis:
+    image: bitnami/redis
+    volumes:
+      - api-redis:/bitnami/redis/data
+    environment:
+      REDIS_PASSWORD: REDIS_PASSWORD
 volumes:
   api-db:
+  api-redis:
