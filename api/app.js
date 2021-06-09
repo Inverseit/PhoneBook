@@ -7,7 +7,7 @@ const { makeExecutableSchema } = require("@graphql-tools/schema");
 const glue = require("schemaglue");
 
 const { schema, resolver } = glue("./src/graphql", {
-  ignore: ["**/DAL.js", "**/*.spec.js", "**/*.test.js"],
+  ignore: ["**/DAL*.js", "**/*.spec.js", "**/*.test.js"],
 });
 
 const executableSchema = makeExecutableSchema({

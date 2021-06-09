@@ -1,6 +1,6 @@
 // const db = require("../../../services/db");
 const isAuthenticated = require("../../../midlewares/isAuthenticated");
-const DAL = require("./DAL");
+const DAL = require("./DALcontact");
 require("dotenv").config();
 
 const getAllContacts = async (_, args, context) => {
@@ -9,7 +9,6 @@ const getAllContacts = async (_, args, context) => {
     const response = await DAL.findByID(context.db, user.user_id);
     return response.rows;
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -36,7 +35,6 @@ const updateContact = async (_, { id, number, name }, context) => {
     const response = await DAL.updateContacts(db, name, number, user.user_id);
     return response.rows[0];
   } catch (error) {
-    console.log(error);
     throw error;
   }
 };
@@ -44,7 +42,7 @@ const updateContact = async (_, { id, number, name }, context) => {
 const deleteContact = async (_, { id }, context) => {
   const user = isAuthenticated(context.token);
   try {
-    const response = await DAL.deleteContactByID(context.db, id, user_id);
+    const response = await DAL.deleteContactByID(context.db, id, user.user_id);
     return response.rows[0];
   } catch (error) {
     throw error;

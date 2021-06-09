@@ -1,7 +1,6 @@
 const { resolver } = require("./resolver");
-// const signup = resolver.Mutation.signup;
 
-jest.mock("./DAL.js", () => require("./__mocks__/DAL"));
+jest.mock("./DALuser.js", () => require("./__mocks__/DALuser"));
 
 jest.mock("bcryptjs");
 const bcrypt = require("bcryptjs");
@@ -31,7 +30,7 @@ describe("Login", () => {
   let {
     findEmail: mockedFindEmail,
     insertUser: mockedInsertUser,
-  } = require("./DAL");
+  } = require("./DALuser.js");
 
   test("No such email in login", async () => {
     mockedFindEmail.mockReturnValueOnce({ rows: [] });
@@ -63,7 +62,7 @@ describe("Sign Up", () => {
   let {
     findEmail: mockedFindEmail,
     insertUser: mockedInsertUser,
-  } = require("./DAL");
+  } = require("./DALuser.js");
   test("Password verification error", async () => {
     await expect(
       signup(

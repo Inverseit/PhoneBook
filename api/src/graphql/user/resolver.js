@@ -1,7 +1,7 @@
 // const db = require("../../../services/db");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const DAL = require("./DAL");
+const DAL = require("./DALuser.js");
 require("dotenv").config();
 
 // Login resolver (email, password) => AuthInfo
