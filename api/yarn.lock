@@ -524,6 +524,29 @@
     "@types/yargs" "^16.0.0"
     chalk "^4.0.0"
 
+"@sendgrid/client@^7.4.3":
+  version "7.4.3"
+  resolved "https://registry.yarnpkg.com/@sendgrid/client/-/client-7.4.3.tgz#bc71aae05de2cd9aa607f4eb1d886711d09f9595"
+  integrity sha512-tTaHx893w5iqG0sVtUnMyRchuwYF95k4UOkmov1MouMIeMUbNvbalITo7cG7YSXUTY9rT2t4eBY6HcEBCVeqfg==
+  dependencies:
+    "@sendgrid/helpers" "^7.4.3"
+    axios "^0.21.1"
+
+"@sendgrid/helpers@^7.4.3":
+  version "7.4.3"
+  resolved "https://registry.yarnpkg.com/@sendgrid/helpers/-/helpers-7.4.3.tgz#231a4405266cfa291054df8b668fe3a4dc9387aa"
+  integrity sha512-Wt+68g1sVEM5UspJh34O/cxtv6BBbtAIk7U9B3PB2ySOtPs9e6hI1QkgYVwpNmkt7k2p86muUNyma/Aig25agg==
+  dependencies:
+    deepmerge "^4.2.2"
+
+"@sendgrid/mail@^7.4.4":
+  version "7.4.4"
+  resolved "https://registry.yarnpkg.com/@sendgrid/mail/-/mail-7.4.4.tgz#cc31915342d0233592baa6e80b74beaf32e0bf2b"
+  integrity sha512-9+dyArajxbPY7eJJAd2eps7MVsXW9E4Y294gWeMYku0/Id/qAivexidjstvkkVlZdlrHbEsGDlnMEcw2eXOiFg==
+  dependencies:
+    "@sendgrid/client" "^7.4.3"
+    "@sendgrid/helpers" "^7.4.3"
+
 "@sindresorhus/is@^0.14.0":
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
@@ -804,6 +827,13 @@ avvio@^7.1.2:
     debug "^4.0.0"
     fastq "^1.6.1"
     queue-microtask "^1.1.2"
+
+axios@^0.21.1:
+  version "0.21.1"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.1.tgz#22563481962f4d6bde9a76d516ef0e5d3c09b2b8"
+  integrity sha512-dKQiRHxGD9PPRIUNIWvZhPTPpl1rf/OxTYKsqKUDjBwYylTvV7SjSHJb9ratfyzM6wCdLCOYLzs73qpg5c4iGA==
+  dependencies:
+    follow-redirects "^1.10.0"
 
 babel-jest@^27.0.2:
   version "27.0.2"
@@ -1717,6 +1747,11 @@ flatstr@^1.0.12:
   version "1.0.12"
   resolved "https://registry.yarnpkg.com/flatstr/-/flatstr-1.0.12.tgz#c2ba6a08173edbb6c9640e3055b95e287ceb5931"
   integrity sha512-4zPxDyhCyiN2wIAtSLI6gc82/EjqZc1onI4Mz/l0pWrAlsSfYH/2ZIcU+e3oA2wDwbzIWNKwa23F8rh6+DRWkw==
+
+follow-redirects@^1.10.0:
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.14.1.tgz#d9114ded0a1cfdd334e164e6662ad02bfd91ff43"
+  integrity sha512-HWqDgT7ZEkqRzBvc2s64vSZ/hfOceEol3ac/7tKwzuvEyWx3/4UegXh5oBOIotkGsObyk3xznnSRVADBgWSQVg==
 
 form-data@^2.5.1:
   version "2.5.1"
