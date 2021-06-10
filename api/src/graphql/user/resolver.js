@@ -24,7 +24,6 @@ const login = async (_, { email, password }, context) => {
     // Generate and save a code to the redis
     const code = getRandomCode();
     const reply = await context.redis.setAsync(user_id, code);
-    console.log(`${reply} for ${user_id} with code=${code}`);
     context.redis.client.expire(user_id, 60);
 
     return user_id;

@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 module.exports = {
   findEmail: async (db, email) => {
     try {
@@ -21,5 +22,9 @@ module.exports = {
     } catch (error) {
       throw error;
     }
+  },
+
+  setRedisToken: async (redisClient, user_id) => {
+    return "hello";
   },
 };

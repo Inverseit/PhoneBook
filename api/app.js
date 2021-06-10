@@ -1,6 +1,7 @@
 const Fastify = require("fastify");
 const mercurius = require("mercurius");
 const db = require("./services/db");
+const { client: redisClient, getAsync, setAsync } = require("./services/redis");
 const app = Fastify({ logger: true });
 
 const { makeExecutableSchema } = require("@graphql-tools/schema");
@@ -23,6 +24,11 @@ const graphqlOptions = {
     return {
       db: db,
       token: request.headers["x-jwt-token"],
+      redis: {
+        client: redisClient,
+        getAsync: getAsync,
+        setAsync: setAsync,
+      },
     };
   },
 };

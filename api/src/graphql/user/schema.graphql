@@ -9,8 +9,13 @@ type AuthData {
   tokenExpiration: Int!
 }
 
+input tfaInput {
+  code: String!, 
+  user_id: ID!
+}
+
 type Query {
-  login(email: String!, password: String!): AuthData!
+  tfa(input: tfaInput):AuthData!
 }
 
 input SignUpInput {
@@ -22,4 +27,5 @@ input SignUpInput {
 
 type Mutation {
   signup(input: SignUpInput!): User
+  login(email: String!, password: String!): ID!
 }
