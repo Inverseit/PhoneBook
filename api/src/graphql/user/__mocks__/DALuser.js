@@ -5,4 +5,7 @@ module.exports = {
   insertUser: jest.fn().mockReturnValue({
     rows: [{ email: "test_email", hash: "test_hash", name: "test_name" }],
   }),
+  setRedis: jest.fn().mockReturnValue(true),
+
+  getRedis: jest.fn().mockReturnValue("test_token"),
 };

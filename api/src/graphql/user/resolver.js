@@ -1,9 +1,9 @@
 // const db = require("../../../services/db");
+require("dotenv").config();
 const bcrypt = require("bcryptjs");
 const DAL = require("./DALuser.js");
 const jwt = require("jsonwebtoken");
 const { sendEmailCode } = require("../../../services/sendgrid");
-require("dotenv").config();
 
 const getRandomCode = () => {
   const min = 100000;
@@ -24,11 +24,10 @@ const login = async (_, { email, password }, context) => {
     if (!result) throw new Error("Login credentials error!");
     // Generate and save a code to the redis
     const code = getRandomCode();
-    await context.redis.setAsync(user_id, code);
     // send email
     await sendEmailCode(email, code);
-    // set timer
-    context.redis.client.expire(user_id, 60);
+    // set redis code with 60-sec timer
+    await DAL.setRedis(context.redis, { user_id, code });
 
     return email;
   } catch (error) {
@@ -41,10 +40,11 @@ const tfa = async (_, { input: { email, code } }, context) => {
     // lookup redis and compare
     const res = await DAL.findEmail(context.db, email);
     if (res.rows.length != 1) {
-      throw new Error("Email is not error!");
+      throw new Error("Email error!");
     }
     const user_id = res.rows[0].user_id;
-    const reply = await context.redis.getAsync(user_id);
+    // const reply = await context.redis.getAsync(user_id);
+    const reply = await DAL.getRedis(context.redis, { user_id });
     if (reply != code) {
       throw new Error("Your TFA token is not valid or expired!");
     }

@@ -24,7 +24,15 @@ module.exports = {
     }
   },
 
-  setRedisToken: async (redisClient, user_id) => {
-    return "hello";
+  setRedis: async (redis, { user_id, code }) => {
+    try {
+      await redis.setAsync(user_id, code);
+      redis.client.expire(user_id, 60);
+    } catch (error) {}
+  },
+
+  getRedis: async (redis, { user_id }) => {
+    const reply = await redis.getAsync(user_id);
+    return reply;
   },
 };

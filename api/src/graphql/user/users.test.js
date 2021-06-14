@@ -3,6 +3,12 @@ const { resolver } = require("./resolver");
 jest.mock("./DALuser.js", () => require("./__mocks__/DALuser"));
 
 jest.mock("bcryptjs");
+
+jest.mock("@sendgrid/mail");
+jest.mock("../../../services/sendgrid");
+const { sendEmailCode } = require("../../../services/sendgrid");
+sendEmailCode.mockReturnValue(true);
+
 const bcrypt = require("bcryptjs");
 bcrypt.genSalt.mockReturnValue("test_salt");
 bcrypt.hash.mockReturnValue("test_hash");
@@ -25,15 +31,20 @@ const input = {
   password2: "test_password",
 };
 
+const context = {
+  db: undefined,
+  redis: undefined,
+};
+
 describe("Login", () => {
-  const login = resolver.Query.login;
+  const login = resolver.Mutation.login;
   let {
     findEmail: mockedFindEmail,
     insertUser: mockedInsertUser,
   } = require("./DALuser.js");
 
   test("No such email in login", async () => {
-    mockedFindEmail.mockReturnValueOnce({ rows: [] });
+    mockedFindEmail.mockReturnValue({ rows: [] });
     await expect(login(undefined, user, {})).rejects.toThrow(
       "Login credentials error!"
     );
@@ -48,12 +59,9 @@ describe("Login", () => {
 
   test("Correct password case", async () => {
     bcrypt.compare.mockReturnValue(true);
+    mockedFindEmail.mockReturnValue({ rows: [{ user }] });
     const res = await login({}, user, {});
-    expect(res).toEqual({
-      user_id: 1,
-      token: "test_token",
-      tokenExpiration: 2,
-    });
+    expect(res).toEqual(user.email);
   });
 });
 
@@ -63,6 +71,9 @@ describe("Sign Up", () => {
     findEmail: mockedFindEmail,
     insertUser: mockedInsertUser,
   } = require("./DALuser.js");
+
+  mockedFindEmail.mockReturnValue({ rows: [] });
+
   test("Password verification error", async () => {
     await expect(
       signup(
@@ -125,7 +136,7 @@ describe("Sign Up", () => {
     ).rejects.toThrow("Password is too short");
   });
   test("Email is in use", async () => {
-    mockedFindEmail.mockReturnValueOnce({ rows: [user] });
+    mockedFindEmail.mockReturnValue({ rows: [user] });
     await expect(
       signup(
         {},
@@ -136,7 +147,7 @@ describe("Sign Up", () => {
       )
     ).rejects.toThrow("Email is already in use");
 
-    mockedFindEmail.mockReturnValueOnce({ rows: [user, user] });
+    mockedFindEmail.mockReturnValue({ rows: [user, user] });
     await expect(
       signup(
         undefined,
@@ -149,8 +160,7 @@ describe("Sign Up", () => {
   });
 
   test("Correct signup", async () => {
-    mockedFindEmail.mockReturnValueOnce({ rows: [] });
-    mockedFindEmail.mockReturnValueOnce({ rows: [user] });
+    mockedFindEmail.mockReturnValue({ rows: [] });
     const res = await signup(
       undefined,
       {
@@ -162,6 +172,63 @@ describe("Sign Up", () => {
       email: "test_email",
       hash: "test_hash",
       name: "test_name",
+    });
+  });
+});
+
+describe("TFA", () => {
+  let {
+    findEmail: mockedFindEmail,
+    insertUser: mockedInsertUser,
+    getRedis,
+  } = require("./DALuser.js");
+
+  const input = { email: "email", code: "test_token" };
+  const tfa = resolver.Query.tfa;
+
+  test("should fail with email error", async () => {
+    mockedFindEmail.mockReturnValue({ rows: [] });
+    await expect(
+      tfa(
+        undefined,
+        {
+          input,
+        },
+        context
+      )
+    ).rejects.toThrow("Email error!");
+  });
+
+  test("wrong token", async () => {
+    mockedFindEmail.mockReturnValue({ rows: [user] });
+    getRedis.mockReturnValue("wrong-code");
+    // correct code is test_token
+    await expect(
+      tfa(
+        undefined,
+        {
+          input,
+        },
+        { context }
+      )
+    ).rejects.toThrow("Your TFA token is not valid or expired!");
+  });
+
+  test("correct token", async () => {
+    mockedFindEmail.mockReturnValue({ rows: [user] });
+    getRedis.mockReturnValue("test_token");
+    // correct code is test_token'
+    const res = await tfa(
+      undefined,
+      {
+        input,
+      },
+      { context }
+    );
+    await expect(res).toEqual({
+      token: "test_token",
+      tokenExpiration: 2,
+      user_id: 1,
     });
   });
 });
