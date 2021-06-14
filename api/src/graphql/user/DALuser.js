@@ -16,12 +16,17 @@ module.exports = {
   insertUser: async (db, email, hash, name) => {
     try {
       const sql = db.sql;
-      user = { email, password: hash, name };
-      // const response = await db.sql`
-      //   insert into users ${sql(user, 'email', 'password', 'name')} returning email
-      // `;
-      const response =
-        await db.sql`insert into users (email, password, name) values (${email}, ${hash}, ${name}) returning *`;
+      user = { email: email, password: hash, name };
+      const response = await db.sql`
+        insert into users ${sql(
+          user,
+          'email',
+          'password',
+          'name'
+        )} returning email
+      `;
+      // const response =
+      //   await db.sql`insert into users (email, password, name) values (${email}, ${hash}, ${name}) returning *`;
       return response;
     } catch (error) {
       throw error;

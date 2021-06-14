@@ -14,9 +14,9 @@ module.exports = {
       const sql = db.sql;
       // const query = `insert into contacts(name, number, user_id) values ($1, $2, $3) returning *`;
       // const response = await db.query(query, [name, number, user_id]);
-      const user = { name, number, user_id };
+      const contact = { name, number, user_id };
       const response = await db.sql`
-        insert into contacts(name, number, user_id) values (${name}, ${number}, ${user_id})
+        insert into contacts ${sql(contact, 'name', 'number', 'user_id')}
         returning *
       `;
       return response;
