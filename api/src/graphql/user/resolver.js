@@ -24,23 +24,26 @@ const login = async (_, { email, password }, context) => {
     if (!result) throw new Error("Login credentials error!");
     // Generate and save a code to the redis
     const code = getRandomCode();
-    const reply = await context.redis.setAsync(user_id, code);
-    console.log(`${reply} for ${user_id} with code=${code}`);
-    const resEmail = await sendEmailCode(email, code);
-    context.redis.client.expire(user_id, 60);
-    console.log(resEmail);
-
+    await context.redis.setAsync(user_id, code);
     // send email
+    await sendEmailCode(email, code);
+    // set timer
+    context.redis.client.expire(user_id, 60);
 
-    return user_id;
+    return email;
   } catch (error) {
     throw error;
   }
 };
 
-const tfa = async (_, { input: { user_id, code } }, context) => {
+const tfa = async (_, { input: { email, code } }, context) => {
   try {
     // lookup redis and compare
+    const res = await DAL.findEmail(context.db, email);
+    if (res.rows.length != 1) {
+      throw new Error("Email is not error!");
+    }
+    const user_id = res.rows[0].user_id;
     const reply = await context.redis.getAsync(user_id);
     if (reply != code) {
       throw new Error("Your TFA token is not valid or expired!");
