@@ -44,7 +44,7 @@ describe("Login", () => {
   } = require("./DALuser.js");
 
   test("No such email in login", async () => {
-    mockedFindEmail.mockReturnValue({ rows: [] });
+    mockedFindEmail.mockReturnValue([]);
     await expect(login(undefined, user, {})).rejects.toThrow(
       "Login credentials error!"
     );
@@ -59,7 +59,7 @@ describe("Login", () => {
 
   test("Correct password case", async () => {
     bcrypt.compare.mockReturnValue(true);
-    mockedFindEmail.mockReturnValue({ rows: [{ user }] });
+    mockedFindEmail.mockReturnValue([{ user }]);
     const res = await login({}, user, {});
     expect(res).toEqual(user.email);
   });
@@ -72,7 +72,7 @@ describe("Sign Up", () => {
     insertUser: mockedInsertUser,
   } = require("./DALuser.js");
 
-  mockedFindEmail.mockReturnValue({ rows: [] });
+  mockedFindEmail.mockReturnValue([]);
 
   test("Password verification error", async () => {
     await expect(
@@ -136,7 +136,7 @@ describe("Sign Up", () => {
     ).rejects.toThrow("Password is too short");
   });
   test("Email is in use", async () => {
-    mockedFindEmail.mockReturnValue({ rows: [user] });
+    mockedFindEmail.mockReturnValue([user]);
     await expect(
       signup(
         {},
@@ -147,7 +147,7 @@ describe("Sign Up", () => {
       )
     ).rejects.toThrow("Email is already in use");
 
-    mockedFindEmail.mockReturnValue({ rows: [user, user] });
+    mockedFindEmail.mockReturnValue([user, user]);
     await expect(
       signup(
         undefined,
@@ -160,7 +160,7 @@ describe("Sign Up", () => {
   });
 
   test("Correct signup", async () => {
-    mockedFindEmail.mockReturnValue({ rows: [] });
+    mockedFindEmail.mockReturnValue([]);
     const res = await signup(
       undefined,
       {
@@ -187,7 +187,7 @@ describe("TFA", () => {
   const tfa = resolver.Query.tfa;
 
   test("should fail with email error", async () => {
-    mockedFindEmail.mockReturnValue({ rows: [] });
+    mockedFindEmail.mockReturnValue([]);
     await expect(
       tfa(
         undefined,
@@ -200,7 +200,7 @@ describe("TFA", () => {
   });
 
   test("wrong token", async () => {
-    mockedFindEmail.mockReturnValue({ rows: [user] });
+    mockedFindEmail.mockReturnValue([user]);
     getRedis.mockReturnValue("wrong-code");
     // correct code is test_token
     await expect(
@@ -215,7 +215,7 @@ describe("TFA", () => {
   });
 
   test("correct token", async () => {
-    mockedFindEmail.mockReturnValue({ rows: [user] });
+    mockedFindEmail.mockReturnValue([user]);
     getRedis.mockReturnValue("test_token");
     // correct code is test_token'
     const res = await tfa(

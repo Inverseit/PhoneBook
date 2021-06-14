@@ -1,11 +1,12 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 module.exports = {
   findEmail: async (db, email) => {
+    const sql = db.sql;
     try {
-      const response = await db.query(
-        "select user_id, password from users where email = $1",
-        [email]
-      );
+      const response = await db.sql`
+        select user_id, password from users where email = ${email}
+      `;
+      // const res = { rows: response };
       return response;
     } catch (error) {
       throw error;
@@ -14,10 +15,13 @@ module.exports = {
 
   insertUser: async (db, email, hash, name) => {
     try {
-      const response = await db.query(
-        "insert into users(email, password, name) values ($1, $2, $3) returning email",
-        [email, hash, name]
-      );
+      const sql = db.sql;
+      user = { email, password: hash, name };
+      // const response = await db.sql`
+      //   insert into users ${sql(user, 'email', 'password', 'name')} returning email
+      // `;
+      const response =
+        await db.sql`insert into users (email, password, name) values (${email}, ${hash}, ${name}) returning *`;
       return response;
     } catch (error) {
       throw error;

@@ -1,9 +1,9 @@
-"use strict";
-const db = require("../services/db");
+'use strict';
+const db = require('../services/db');
 
-module.exports.up = function (next) {
-  db.pool.query(
-    `drop table IF EXISTS users; CREATE TABLE users
+const up = async () => {
+  try {
+    await db.sql`drop table IF EXISTS users; CREATE TABLE users
 (
     user_id serial,
     email character varying(60) COLLATE pg_catalog."default" NOT NULL,
@@ -28,20 +28,19 @@ CREATE TABLE contacts
         ON DELETE NO ACTION
 );
 ALTER TABLE contacts
-    OWNER to postgres;`,
-    [],
-    (err, res) => {
-      if (err) {
-        throw err;
-      }
-      console.log("done");
-      next();
-    }
-  );
+    OWNER to postgres;`;
+  } catch (error) {
+    throw error;
+  }
+};
+
+module.exports.up = async function (next) {
+  await up();
+  next();
 };
 
 module.exports.down = async function (next) {
-  await db.query("DROP TABLE users", []);
-  await db.query("DROP TABLE contacts", []);
+  await db.query('DROP TABLE users', []);
+  await db.query('DROP TABLE contacts', []);
   next();
 };

@@ -7,8 +7,8 @@ const config = {
     user: env.DB_USER || "postgres",
     password: env.DB_PASSWORD || "postgres",
     database: env.DB_NAME || "api_db",
+    username: env.DB_NAME || "api_db",
   },
-  listPerPage: env.LIST_PER_PAGE || 10,
 };
 
 module.exports = config;
